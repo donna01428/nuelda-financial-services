@@ -23,14 +23,33 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
 
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      width: 150px;
+      max-width: 80%;
+      height: auto;
+      display: inline-block;
+    }
+
     h1 {
       text-align: center;
       color: #0b5e3c;
+      margin-bottom: 5px;
     }
 
     h3 {
       color: #0b5e3c;
       margin-top: 30px;
+    }
+
+    .contact-info {
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 20px;
     }
 
     label {
@@ -52,10 +71,23 @@
       background: #f0f0f0;
     }
 
+    ul {
+      padding-left: 20px;
+      font-size: 14px;
+    }
+
+    .highlight {
+      background: #f0f8f4;
+      padding: 12px;
+      border-left: 4px solid #0b5e3c;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
     button {
       width: 100%;
       background: #0b5e3c;
-      color: white;
+      color: #ffffff;
       padding: 14px;
       border: none;
       border-radius: 6px;
@@ -68,6 +100,13 @@
     button:hover {
       background: #094c31;
     }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 30px;
+      color: #777;
+    }
   </style>
 </head>
 
@@ -75,8 +114,22 @@
 
 <div class="container">
 
+  <div class="logo">
+    <img src="logo.png" alt="Nuelda Financial Services Logo">
+  </div>
+
   <h1>Nuelda Financial Services</h1>
 
+  <div class="contact-info">
+    No. 45 Okpanam Road beside Living Faith Church, Asaba, Delta State<br>
+    📞 +234 803 778 5772 | ✉️ donna01428@gmail.com
+  </div>
+
+  <p>
+    We provide short-term cash loans with fast approval. Disbursement is done in person only.
+  </p>
+
+  <h3>Loan Details</h3>
   <p>
     <strong>Maximum Loan:</strong> ₦150,000<br>
     <strong>Interest:</strong> 20% (deducted upfront)<br>
@@ -98,13 +151,13 @@
   <input type="text" id="occupation">
 
   <label>Loan Amount (₦)</label>
-  <input type="number" id="amount" max="150000" oninput="calculateLoan()">
+  <input type="number" id="amount" oninput="calculateLoan()">
 
   <label>Amount You Will Receive (₦)</label>
   <input type="text" id="receive" readonly>
 
   <label>Date of Refund</label>
-  <input type="date" id="refunddate">
+  <input type="date" id="refunddate" readonly>
 
   <label>BVN of Borrower</label>
   <input type="number" id="borrowerbvn" maxlength="11"
@@ -138,9 +191,14 @@
   <h3>Terms and Conditions</h3>
   <ul>
     <li>Maximum loan amount is ₦150,000.</li>
-    <li>Interest rate is 20%.</li>
+    <li>Interest rate is 20%, deducted upfront.</li>
     <li>Loan duration is 30 days.</li>
+    <li>Late repayment may attract penalties.</li>
   </ul>
+
+  <div class="highlight">
+    <strong>No COLLATERAL is required</strong>, but the borrower must return the said amount by the end of the month except on special request.
+  </div>
 
   <label>Electronic Signature</label>
   <input type="text" id="signature">
@@ -150,41 +208,61 @@
 
   <button onclick="sendToWhatsApp()">Apply via WhatsApp</button>
 
+  <footer>
+    © 2026 Nuelda Financial Services. All rights reserved.
+  </footer>
+
 </div>
 
 <script>
   function calculateLoan() {
-    const amountInput = document.getElementById("amount");
-    let amount = Number(amountInput.value);
-
-    if (amount > 150000) {
-      amount = 150000;
-      amountInput.value = 150000;
-      alert("Maximum loan amount is ₦150,000");
-    }
+    const amount = document.getElementById("amount").value;
+    const receive = document.getElementById("receive");
+    const refundDate = document.getElementById("refunddate");
 
     if (!amount || amount <= 0) {
       receive.value = "";
-      refunddate.value = "";
+      refundDate.value = "";
       return;
     }
 
     const interest = amount * 0.20;
     receive.value = (amount - interest).toLocaleString();
 
-    const today = new Date();
-    today.setDate(today.getDate() + 30);
-    refunddate.value = today.toISOString().split("T")[0];
+    const date = new Date();
+    date.setDate(date.getDate() + 30);
+    refundDate.value = date.toISOString().split("T")[0];
   }
 
   function sendToWhatsApp() {
-    const message = `
-Loan Application - Nuelda Financial Services
+    const message =
+`Loan Application - Nuelda Financial Services
 
 Name: ${name.value}
 Phone: ${phone.value}
 Address: ${address.value}
 Occupation: ${occupation.value}
+
 Loan Amount: ₦${amount.value}
 Amount Received: ₦${receive.value}
-Refund Dat
+Refund Date: ${refunddate.value}
+Borrower BVN: ${borrowerbvn.value}
+Account Number: ${accountnumber.value}
+
+Guarantor Name: ${gname.value}
+Guarantor Phone: ${gphone.value}
+Relationship: ${grelationship.value}
+Guarantor BVN: ${gbvn.value}
+
+Signature: ${signature.value}
+Date: ${sigdate.value}`;
+
+    window.open(
+      `https://wa.me/2348069800778?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
+  }
+</script>
+
+</body>
+</html>
